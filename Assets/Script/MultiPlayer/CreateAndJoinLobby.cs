@@ -13,6 +13,7 @@ public class CreateAndJoin : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsConnectedAndReady)
         {
             PhotonNetwork.CreateRoom(CreateRoomInput.text);
+            
         }
         else
         {
