@@ -16,6 +16,9 @@ public class CardSpawner : MonoBehaviourPun
 
     void SpawnCards()
     {
+        SpawnCard();
+
+        /*
         if (PhotonNetwork.IsMasterClient)
         {
             SpawnCard_Player("owner");
@@ -24,6 +27,7 @@ public class CardSpawner : MonoBehaviourPun
         {
             SpawnCard_Enemy("enemy");
         }
+        */
     }
     public void SpawnCard_Player(string owner)
     {
@@ -42,6 +46,17 @@ public class CardSpawner : MonoBehaviourPun
             GameObject card = PhotonNetwork.Instantiate(PrefabsCard.name, PointSpawnEnemy.transform.position, Quaternion.identity);
             card.transform.SetParent(PointSpawnEnemy.transform, false);// Imposta il genitore  a PointSpawnPlayer
             card.GetComponent<Card_Display>().test = owner;
+        }
+    }
+
+    //TEST SINGLEPLAYER
+    public void SpawnCard()
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            GameObject card = Instantiate(PrefabsCard, PointSpawnPlayer.transform.position, Quaternion.identity);
+            card.transform.SetParent(PointSpawnPlayer.transform, false);// Imposta il genitore  a PointSpawnPlayer
+            
         }
     }
 

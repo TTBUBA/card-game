@@ -2,21 +2,24 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Photon.Realtime;
 
 public class CreateAndJoin : MonoBehaviourPunCallbacks
 {
     public InputField CreateRoomInput;
     public InputField JoinRoomInput;
 
+
+    public Text TextErrorRoom;
     public void CreateRoom()
     {
         if (PhotonNetwork.IsConnectedAndReady)
         {
-            PhotonNetwork.CreateRoom(CreateRoomInput.text);
-            
+            PhotonNetwork.CreateRoom(CreateRoomInput.text , new RoomOptions { MaxPlayers = 2}); 
         }
         else
         {
+
             Debug.LogError("Client non è connesso al Master Server.");
         }
     }

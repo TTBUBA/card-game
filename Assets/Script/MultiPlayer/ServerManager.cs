@@ -21,7 +21,7 @@ public class ServerManager : MonoBehaviourPunCallbacks
     public void UpdatePlayerCount()
     {
         string PeopleCount;
-        PeopleCount = PhotonNetwork.CountOfPlayers.ToString() + "/2";
+        PeopleCount = PhotonNetwork.CountOfPlayersInRooms.ToString() + "/2";
         People_ConnectServer.text = PeopleCount;
         Debug.Log(PeopleCount);
     }
