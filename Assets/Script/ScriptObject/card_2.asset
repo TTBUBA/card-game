@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ba0d3434037ac7d4188db64beedbee94, type: 3}
-  m_Name: Card_Test
+  m_Name: card_2
   m_EditorClassIdentifier: 
   owner: 
   NameCard: buba
   TypeEra: 
   DescriptionCard: buba test
   ImageCard: {fileID: 0}
-  Light: 5
+  Light: 2
