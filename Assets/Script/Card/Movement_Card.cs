@@ -1,3 +1,4 @@
+using ExitGames.Client.Photon;
 using Photon.Pun.Demo.PunBasics;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -5,11 +6,13 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
-public class Movement_Card : MonoBehaviour, IDragHandler, IEndDragHandler , IPointerClickHandler
+public class Movement_Card : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
-    public Camera Camera; 
+    public Camera Camera;
     public Vector3 LastPosition; // Ultima posizione valida della carta
     public RectTransform rectTransform;
+    public bool CardRelase;
+
 
     [SerializeField] private Card_Display card_Display;
     [SerializeField] private CardManager cardManager;
@@ -35,7 +38,7 @@ public class Movement_Card : MonoBehaviour, IDragHandler, IEndDragHandler , IPoi
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        cardManager.cardSelect = card_Display.Card_Info;
+        //cardManager.cardSelect = card_Display.Card_Info;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -46,9 +49,7 @@ public class Movement_Card : MonoBehaviour, IDragHandler, IEndDragHandler , IPoi
 
         string NameCard = card_Display.Card_Info.name;
 
-        //cardManager.cardSelect.name = NameCard;
-
-        Debug.Log(NameCard);
+        cardManager.cardSelect = card_Display.Card_Info;    
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -59,6 +60,8 @@ public class Movement_Card : MonoBehaviour, IDragHandler, IEndDragHandler , IPoi
         if (hitcollider != null && hitcollider.CompareTag("BoxPlaceCard")) 
         {
             this.transform.position = hitcollider.transform.position; // Allinea la carta alla posizione del collider 
+            CardRelase = true;
+            cardManager.DescreseLight();
         }
         else 
         {
