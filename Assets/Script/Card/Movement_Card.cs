@@ -38,7 +38,7 @@ public class Movement_Card : MonoBehaviour, IDragHandler, IEndDragHandler, IPoin
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        //cardManager.cardSelect = card_Display.Card_Info;
+        cardManager.cardSelect = card_Display.Card_Info;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -57,16 +57,18 @@ public class Movement_Card : MonoBehaviour, IDragHandler, IEndDragHandler, IPoin
         Vector2 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse 
         Collider2D hitcollider = Physics2D.OverlapPoint(PosMouse); // Controlla se c'è un oggetto sotto il mouse 
 
-        if (hitcollider != null && hitcollider.CompareTag("BoxPlaceCard")) 
+        if (hitcollider != null && hitcollider.CompareTag("BoxPlaceCard"))
         {
             this.transform.position = hitcollider.transform.position; // Allinea la carta alla posizione del collider 
             CardRelase = true;
             cardManager.DescreseLight();
+            cardManager.DecreseLife();
         }
-        else 
+        else
         {
             this.transform.position = LastPosition;
             //card_Display = null;
         }
+
     }
 }
