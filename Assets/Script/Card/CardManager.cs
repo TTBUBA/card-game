@@ -1,4 +1,5 @@
 using JetBrains.Annotations;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Schema;
 using Unity.Mathematics;
@@ -33,26 +34,19 @@ public class CardManager : MonoBehaviour
                 LucidaDissativare--;
             }
         }
-
+        // Conta quanti oggetti nell'array sono disattivati.
+        int deactivatedLightCount = LightCard.Count(obj  => obj != null && !obj.activeSelf);
+        if( deactivatedLightCount >= 10)
+        {
+            allLightsOff = true;
+        }
         // Aggiorna il valore di Light della carta selezionata
         cardSelect.Light = Mathf.Max(0 , cardSelect.Light - LucidaDissativare);
 
-        foreach (var light in LightCard)
-        {
-           
-            if (light.activeSelf)
-            {
-                allLightsOff = true;
-                break;
-            }
-        }
 
-        if (allLightsOff)
-        {
-            Debug.Log("carte tutte dissativate");
-        }
-
-        Debug.Log(LucidaDissativare);
+        //DEBUG
+        //Debug.Log(LucidaDissativare);
+        Debug.Log(deactivatedLightCount);
     }
 
     public void IncreseLight()
@@ -75,12 +69,12 @@ public class CardManager : MonoBehaviour
 
        Text_ValueLifeEnemy.text = TotalLife.ToString();
 
-        //debug
+        /*debug
         Debug.Log($"AttackPlayer:{cardSelect.Attack} DefesePlayer:{cardSelect.Defese}");
         Debug.Log($"AttackEnemy:{cardSelectEnemy.AttackCard}DefeseEnemy:{cardSelectEnemy.DefeseCard}");
         Debug.Log(LifePlayer);
         Debug.Log(LifeEnemy);
         Debug.Log(TotalLife);
-
+        */
     }
 }

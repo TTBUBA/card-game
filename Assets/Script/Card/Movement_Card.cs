@@ -54,21 +54,30 @@ public class Movement_Card : MonoBehaviour, IDragHandler, IEndDragHandler, IPoin
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Vector2 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse 
-        Collider2D hitcollider = Physics2D.OverlapPoint(PosMouse); // Controlla se c'è un oggetto sotto il mouse 
-
-        if (hitcollider != null && hitcollider.CompareTag("BoxPlaceCard"))
+        if(cardManager.allLightsOff == false)
         {
-            this.transform.position = hitcollider.transform.position; // Allinea la carta alla posizione del collider 
-            CardRelase = true;
-            cardManager.DescreseLight();
-            cardManager.DecreseLife();
+            Vector2 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse 
+            Collider2D hitcollider = Physics2D.OverlapPoint(PosMouse); // Controlla se c'è un oggetto sotto il mouse 
+
+            if (hitcollider != null && hitcollider.CompareTag("BoxPlaceCard"))
+            {
+                this.transform.position = hitcollider.transform.position; // Allinea la carta alla posizione del collider 
+                CardRelase = true;
+                cardManager.DescreseLight();
+                cardManager.DecreseLife();
+            }
+            else
+            {
+                this.transform.position = LastPosition;
+                //card_Display = null;
+            }
         }
         else
         {
             this.transform.position = LastPosition;
             //card_Display = null;
         }
+
 
     }
 }

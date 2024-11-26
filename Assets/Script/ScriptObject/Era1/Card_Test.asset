@@ -18,5 +18,5 @@ MonoBehaviour:
   Attack: 10
   Defese: 10
   ImageCard: {fileID: 0}
-  Light: 3
+  Light: 5
   IsEnemy: 0
