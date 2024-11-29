@@ -93,6 +93,7 @@ GameObject:
   - component: {fileID: 1898919678646234317}
   - component: {fileID: 7333640077706832161}
   - component: {fileID: -5554208616192606895}
+  - component: {fileID: -1503418863055675065}
   - component: {fileID: 563780364933728577}
   m_Layer: 5
   m_Name: Card
@@ -172,7 +173,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Card_Info: {fileID: 11400000, guid: 89b7d6f571464734187e858a69677f4e, type: 2}
-  test: 
+  AttackCard: 0
+  DefeseCard: 0
+  LightCard: 0
 --- !u!114 &7333640077706832161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,6 +191,10 @@ MonoBehaviour:
   Camera: {fileID: 0}
   LastPosition: {x: 0, y: 0, z: 0}
   rectTransform: {fileID: 0}
+  CardRelase: 0
+  card_Display: {fileID: 0}
+  cardManager: {fileID: 0}
+  photonview: {fileID: 0}
 --- !u!114 &-5554208616192606895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -206,10 +213,27 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   observableSearch: 2
-  ObservedComponents: []
+  ObservedComponents:
+  - {fileID: -1503418863055675065}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &-1503418863055675065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8527737741807782784}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 1
+  m_UseLocal: 1
 --- !u!61 &563780364933728577
 BoxCollider2D:
   m_ObjectHideFlags: 0

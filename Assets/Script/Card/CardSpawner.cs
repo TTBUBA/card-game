@@ -6,7 +6,11 @@ public class CardSpawner : MonoBehaviourPun
 {
     public GameObject PrefabsCard;
     public GameObject[] PointSpawnPlayer;
-    public GameObject PointSpawnEnemy;
+    public GameObject[] PointSpawnEnemy;
+
+    public RectTransform Poinspawnplayer;
+    public RectTransform Pointspawnenemy;
+
     public Camera MainCamera;
     public CardManager CardManager;
     public void Start()
@@ -17,17 +21,6 @@ public class CardSpawner : MonoBehaviourPun
     void SpawnCards()
     {
         SpawnCard();
-
-        /*
-        if (PhotonNetwork.IsMasterClient)
-        {
-            SpawnCard_Player("owner");
-        }
-        else
-        {
-            SpawnCard_Enemy("enemy");
-        }
-        */
     }
 
     /*
@@ -54,28 +47,53 @@ public class CardSpawner : MonoBehaviourPun
     */
 
 
-    //TEST SINGLEPLAYER
+    //TEST MULTIPLAYER
     public void SpawnCard()
     {
-        for (int i = 0; i < 6; i++)
+        // Determina se il giocatore è il MasterClient (giocatore principale)
+        bool isLocalPlayer = PhotonNetwork.IsMasterClient;
+
+        if (isLocalPlayer)
         {
-            
-            GameObject card = Instantiate(PrefabsCard, PointSpawnPlayer[i].transform.position, Quaternion.identity);
-            card.transform.SetParent(PointSpawnPlayer[i].transform, false);// Imposta il genitore  a PointSpawnPlayer
-
-            // Ottieni lo script Movement_Card
-            Movement_Card movementCard = card.GetComponent<Movement_Card>();
-            CardManager cardmanager = card.GetComponent<CardManager>();
-
-            if (movementCard != null)
+           
+            for (int i = 0; i < 6; i++)
             {
-                movementCard.SetCamera(MainCamera);//imposta la camera alla singola carta
-                movementCard.SetPositionCard();//Salva la posizione della carta alla sua creazione
-                movementCard.SetObject(CardManager); 
+                // Crea la carta e la sincronizza con tutti i giocatori
+                GameObject card = PhotonNetwork.Instantiate(PrefabsCard.name, PointSpawnPlayer[i].transform.position, Quaternion.identity);
+                card.transform.SetParent(PointSpawnPlayer[i].transform, false); // Assegna il punto di spawn
 
+                // Configura la carta
+                Movement_Card movementCard = card.GetComponent<Movement_Card>();
+                if (movementCard != null)
+                {
+                    movementCard.SetCamera(MainCamera);   // Assegna la camera
+                    movementCard.SetPositionCard();      // Salva la posizione iniziale
+                    movementCard.SetObject(CardManager); // Assegna il CardManager
+                }
+            }
 
+            
+        }
+        else if(!isLocalPlayer)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                // Crea la carta e la sincronizza con tutti i giocatori
+                GameObject card = PhotonNetwork.Instantiate(PrefabsCard.name, PointSpawnEnemy[i].transform.position, Quaternion.identity);
+                card.transform.SetParent(PointSpawnEnemy[i].transform, false); // Assegna il punto di spawn
+
+                // Configura la carta
+                Movement_Card movementCard = card.GetComponent<Movement_Card>();
+                if (movementCard != null)
+                {
+                    movementCard.SetCamera(MainCamera);   // Assegna la camera
+                    movementCard.SetPositionCard();      // Salva la posizione iniziale
+                    movementCard.SetObject(CardManager); // Assegna il CardManager
+                }
             }
         }
+
     }
+
 
 }

@@ -1,12 +1,9 @@
-using ExitGames.Client.Photon;
-using Photon.Pun.Demo.PunBasics;
+using Photon.Pun;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
 
-public class Movement_Card : MonoBehaviour, IDragHandler, IEndDragHandler, IPointerClickHandler
+
+public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, IPointerClickHandler
 {
     public Camera Camera;
     public Vector3 LastPosition; // Ultima posizione valida della carta
@@ -16,6 +13,11 @@ public class Movement_Card : MonoBehaviour, IDragHandler, IEndDragHandler, IPoin
 
     [SerializeField] private Card_Display card_Display;
     [SerializeField] private CardManager cardManager;
+    [SerializeField] private PhotonView photonview;
+    public void Start()
+    {
+        photonview = GetComponent<PhotonView>();
+    }
     public void SetObject(CardManager CardManager)
     {
         card_Display = GetComponent<Card_Display>();
@@ -43,28 +45,40 @@ public class Movement_Card : MonoBehaviour, IDragHandler, IEndDragHandler, IPoin
 
     public void OnDrag(PointerEventData eventData)
     {
-        Vector3 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse
-        this.transform.position = PosMouse; // Sposta la carta alla posizione del mouse
-        PosMouse.z = 0;
+        if (photonview.IsMine)
+        {
+            Vector3 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse
+            this.transform.position = PosMouse; // Sposta la carta alla posizione del mouse
+            PosMouse.z = 0;
 
-        string NameCard = card_Display.Card_Info.name;
+            string NameCard = card_Display.Card_Info.name;
 
-        cardManager.cardSelect = card_Display.Card_Info;    
+            cardManager.cardSelect = card_Display.Card_Info;    
+        }
+
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        if(cardManager.allLightsOff == false)
+        if(photonview.IsMine)
         {
-            Vector2 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse 
-            Collider2D hitcollider = Physics2D.OverlapPoint(PosMouse); // Controlla se c'è un oggetto sotto il mouse 
-
-            if (hitcollider != null && hitcollider.CompareTag("BoxPlaceCard"))
+            if(cardManager.allLightsOff == false)
             {
-                this.transform.position = hitcollider.transform.position; // Allinea la carta alla posizione del collider 
-                CardRelase = true;
-                cardManager.DescreseLight();
-                cardManager.DecreseLife();
+                Vector2 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse 
+                Collider2D hitcollider = Physics2D.OverlapPoint(PosMouse); // Controlla se c'è un oggetto sotto il mouse 
+
+                if (hitcollider != null && hitcollider.CompareTag("BoxPlaceCard"))
+                {
+                    this.transform.position = hitcollider.transform.position; // Allinea la carta alla posizione del collider 
+                    CardRelase = true;
+                    cardManager.DescreseLight();
+                    cardManager.DecreseLife();
+                }
+                else
+                {
+                    this.transform.position = LastPosition;
+                    //card_Display = null;
+                }
             }
             else
             {
@@ -72,12 +86,8 @@ public class Movement_Card : MonoBehaviour, IDragHandler, IEndDragHandler, IPoin
                 //card_Display = null;
             }
         }
-        else
-        {
-            this.transform.position = LastPosition;
-            //card_Display = null;
-        }
-
 
     }
+
+
 }

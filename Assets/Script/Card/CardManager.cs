@@ -55,6 +55,7 @@ public class CardManager : MonoBehaviour
         for (int i = 0; i < 10; i++)
         {
             LightCard[i].SetActive(true);
+            allLightsOff = false;
         }
     }
 
