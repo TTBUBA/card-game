@@ -886,7 +886,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &285577479
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4418,9 +4418,10 @@ MonoBehaviour:
   - {fileID: 1936537382}
   - {fileID: 124040355}
   allLightsOff: 0
+  Text_ValueLifePlayer: {fileID: 1628229854}
   Text_ValueLifeEnemy: {fileID: 1435812049}
-  Life_Enemy: 20
   Life_Player: 20
+  Life_Enemy: 20
 --- !u!1 &1936537382
 GameObject:
   m_ObjectHideFlags: 0

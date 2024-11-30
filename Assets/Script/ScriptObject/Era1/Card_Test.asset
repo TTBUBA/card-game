@@ -20,3 +20,4 @@ MonoBehaviour:
   ImageCard: {fileID: 0}
   Light: 5
   IsEnemy: 0
+  cardAction: {fileID: 11400000, guid: bcdf3414dbb65344394b5763f5c8a3cc, type: 2}
