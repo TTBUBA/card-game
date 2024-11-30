@@ -14,10 +14,18 @@ public class CardManager : MonoBehaviour
     public bool allLightsOff;
 
     [Header("UI")]
+    public Text Text_ValueLifePlayer;
     public Text Text_ValueLifeEnemy;
 
-    public int Life_Enemy = 20;
+
     public int Life_Player = 20;
+    public int Life_Enemy = 20;
+
+
+    public void Update()
+    {
+        UpdateUi();
+    }
     public void DescreseLight()
     {
         
@@ -70,12 +78,18 @@ public class CardManager : MonoBehaviour
 
        Text_ValueLifeEnemy.text = TotalLife.ToString();
 
-        /*debug
+       /*DEBUG
         Debug.Log($"AttackPlayer:{cardSelect.Attack} DefesePlayer:{cardSelect.Defese}");
         Debug.Log($"AttackEnemy:{cardSelectEnemy.AttackCard}DefeseEnemy:{cardSelectEnemy.DefeseCard}");
         Debug.Log(LifePlayer);
         Debug.Log(LifeEnemy);
         Debug.Log(TotalLife);
         */
+    }
+
+    private void UpdateUi()
+    {
+        Text_ValueLifeEnemy.text = Life_Enemy.ToString();
+        Text_ValueLifePlayer.text = Life_Player.ToString(); 
     }
 }

@@ -12,4 +12,5 @@ public class Card_Info : ScriptableObject
     public Image ImageCard;
     public int Light;
     public bool IsEnemy;
+    public CardAction cardAction;
 }

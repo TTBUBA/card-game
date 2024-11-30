@@ -1588,13 +1588,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2030614509}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b8464a48df0b53b46934a95186d87e93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   CreateRoomInput: {fileID: 761996492}
   JoinRoomInput: {fileID: 89110842}
+  TextErrorRoom: {fileID: 0}
 --- !u!114 &2030614512
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1602,7 +1603,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2030614509}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ddf4939bfc0db948957cb80ea859169, type: 3}
   m_Name: 

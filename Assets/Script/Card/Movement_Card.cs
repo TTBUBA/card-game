@@ -45,6 +45,7 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
 
     public void OnDrag(PointerEventData eventData)
     {
+        /*MULTIPLAYER
         if (photonview.IsMine)
         {
             Vector3 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse
@@ -55,11 +56,21 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
 
             cardManager.cardSelect = card_Display.Card_Info;    
         }
+        */
 
+        //SINGLEPLAYER
+        Vector3 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse
+        this.transform.position = PosMouse; // Sposta la carta alla posizione del mouse
+        PosMouse.z = 0;
+
+        string NameCard = card_Display.Card_Info.name;
+
+        cardManager.cardSelect = card_Display.Card_Info;
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        /*MULTIPLAYER
         if(photonview.IsMine)
         {
             if(cardManager.allLightsOff == false)
@@ -86,7 +97,33 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
                 //card_Display = null;
             }
         }
+        */
 
+        //SinglePlayer
+        if (cardManager.allLightsOff == false)
+        {
+            Vector2 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse 
+            Collider2D hitcollider = Physics2D.OverlapPoint(PosMouse); // Controlla se c'è un oggetto sotto il mouse 
+
+            Debug.Log(hitcollider.name);
+            if (hitcollider != null && hitcollider.CompareTag("BoxPlaceCard"))
+            {
+                this.transform.position = hitcollider.transform.position; // Allinea la carta alla posizione del collider 
+                CardRelase = true;
+                cardManager.DescreseLight();
+                cardManager.DecreseLife();
+                cardManager.cardSelect.cardAction.Execute(cardManager.cardSelect, cardManager);// Esegui L'effeto della carta
+            }
+            else
+            {
+                this.transform.position = LastPosition;
+            }
+        }
+        else
+        {
+            this.transform.position = LastPosition;
+            //card_Display = null;
+        }
     }
 
 
