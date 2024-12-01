@@ -20,3 +20,4 @@ MonoBehaviour:
   defense: 5
   light: 2
   isEnemy: 0
+  cardAction: {fileID: 11400000, guid: 12b28f4f8d1629e42adc497800aa62e8, type: 2}
