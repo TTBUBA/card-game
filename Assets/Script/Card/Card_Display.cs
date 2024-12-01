@@ -7,13 +7,14 @@ public class Card_Display : MonoBehaviour
     public int AttackCard;
     public int DefeseCard;
     public int LightCard;
-
+    public bool IsEnemy;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        LightCard = Card_Info.Light;
-        AttackCard = Card_Info.Attack;
-        DefeseCard = Card_Info.Defese;
+        LightCard = Card_Info.attack;
+        AttackCard = Card_Info.attack;
+        DefeseCard = Card_Info.defense;
+        //IsEnemy = Card_Info.IsEnemy;
     }
 
 }

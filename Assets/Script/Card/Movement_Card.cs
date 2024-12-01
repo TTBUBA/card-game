@@ -14,6 +14,7 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
     [SerializeField] private Card_Display card_Display;
     [SerializeField] private CardManager cardManager;
     [SerializeField] private PhotonView photonview;
+
     public void Start()
     {
         photonview = GetComponent<PhotonView>();
@@ -70,61 +71,46 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        /*MULTIPLAYER
-        if(photonview.IsMine)
+        if (cardManager.allLightsOff)
         {
-            if(cardManager.allLightsOff == false)
-            {
-                Vector2 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse 
-                Collider2D hitcollider = Physics2D.OverlapPoint(PosMouse); // Controlla se c'è un oggetto sotto il mouse 
-
-                if (hitcollider != null && hitcollider.CompareTag("BoxPlaceCard"))
-                {
-                    this.transform.position = hitcollider.transform.position; // Allinea la carta alla posizione del collider 
-                    CardRelase = true;
-                    cardManager.DescreseLight();
-                    cardManager.DecreseLife();
-                }
-                else
-                {
-                    this.transform.position = LastPosition;
-                    //card_Display = null;
-                }
-            }
-            else
-            {
-                this.transform.position = LastPosition;
-                //card_Display = null;
-            }
+            ResetCardPosition();
+            return;
         }
-        */
 
-        //SinglePlayer
-        if (cardManager.allLightsOff == false)
+        Vector2 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse 
+        string Target = card_Display.IsEnemy ? "PlaceCardEnemy" : "PlaceCardPlayer";
+
+        if(tryPositionCard(PosMouse, Target))
         {
-            Vector2 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse 
-            Collider2D hitcollider = Physics2D.OverlapPoint(PosMouse); // Controlla se c'è un oggetto sotto il mouse 
-
-            Debug.Log(hitcollider.name);
-            if (hitcollider != null && hitcollider.CompareTag("BoxPlaceCard"))
-            {
-                this.transform.position = hitcollider.transform.position; // Allinea la carta alla posizione del collider 
-                CardRelase = true;
-                cardManager.DescreseLight();
-                cardManager.DecreseLife();
-                cardManager.cardSelect.cardAction.Execute(cardManager.cardSelect, cardManager);// Esegui L'effeto della carta
-            }
-            else
-            {
-                this.transform.position = LastPosition;
-            }
+            ExecuteCardAction();
         }
         else
         {
-            this.transform.position = LastPosition;
-            //card_Display = null;
+            ResetCardPosition();
         }
     }
 
+    private bool tryPositionCard(Vector2 position, string TargetType)
+    {
+        Collider2D hitcollider = Physics2D.OverlapPoint(position); // Controlla se c'è un oggetto sotto il mouse 
 
+        if (hitcollider != null && hitcollider.CompareTag(TargetType))
+        {
+            transform.position = hitcollider.transform.position;
+            CardRelase = true;
+            return true;
+        }
+
+        return false;
+    }
+    private void ExecuteCardAction()
+    {
+        cardManager.DescreseLight();
+        cardManager.DecreseLife();
+        cardManager.cardSelect.cardAction.Execute(cardManager.cardSelect, cardManager);// Esegui L'effeto della carta
+    }
+    private void ResetCardPosition()
+    {
+        transform.position = LastPosition;
+    }
 }

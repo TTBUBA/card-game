@@ -12,12 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba0d3434037ac7d4188db64beedbee94, type: 3}
   m_Name: Card_Test
   m_EditorClassIdentifier: 
-  NameCard: buba
-  TypeEra: 
-  DescriptionCard: buba test
-  Attack: 10
-  Defese: 10
-  ImageCard: {fileID: 0}
-  Light: 5
-  IsEnemy: 0
-  cardAction: {fileID: 11400000, guid: bcdf3414dbb65344394b5763f5c8a3cc, type: 2}
+  cardName: BUBA
+  cardDescription: 
+  cardImage: {fileID: 0}
+  cardType: iastima
+  attack: 5
+  defense: 5
+  light: 2
+  isEnemy: 0

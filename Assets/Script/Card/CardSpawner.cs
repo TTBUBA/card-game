@@ -121,14 +121,17 @@ public class CardSpawner : MonoBehaviourPun
                 // Crea la carta e la sincronizza con tutti i giocatori
                 GameObject card = Instantiate(PrefabsCard, PointSpawnEnemy[i].transform.position, Quaternion.identity);
                 card.transform.SetParent(PointSpawnEnemy[i].transform, false); // Assegna il punto di spawn
-
+                
                 // Configura la carta
                 Movement_Card movementCard = card.GetComponent<Movement_Card>();
+                Card_Display cardisplay = card.GetComponent<Card_Display>();
                 if (movementCard != null)
                 {
                     movementCard.SetCamera(MainCamera);   // Assegna la camera
                     movementCard.SetPositionCard();      // Salva la posizione iniziale
                     movementCard.SetObject(CardManager); // Assegna il CardManager
+                    cardisplay.IsEnemy = true;
+                    Debug.Log(cardisplay.IsEnemy);
                 }
             }
     }

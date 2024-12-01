@@ -20,8 +20,6 @@ public class CardManager : MonoBehaviour
 
     public int Life_Player = 20;
     public int Life_Enemy = 20;
-
-
     public void Update()
     {
         UpdateUi();
@@ -29,7 +27,7 @@ public class CardManager : MonoBehaviour
     public void DescreseLight()
     {
         
-        int LucidaDissativare = cardSelect.Light;
+        int LucidaDissativare = cardSelect.light;
    
         foreach (var light in LightCard)
         {
@@ -49,7 +47,7 @@ public class CardManager : MonoBehaviour
             allLightsOff = true;
         }
         // Aggiorna il valore di Light della carta selezionata
-        cardSelect.Light = Mathf.Max(0 , cardSelect.Light - LucidaDissativare);
+        cardSelect.light = Mathf.Max(0 , cardSelect.light - LucidaDissativare);
 
 
         //DEBUG
@@ -70,7 +68,7 @@ public class CardManager : MonoBehaviour
     public void DecreseLife()
     {
 
-       int LifePlayer = cardSelect.Attack + cardSelect.Defese;
+       int LifePlayer = cardSelect.attack + cardSelect.defense;
        int LifeEnemy = cardSelectEnemy.AttackCard + cardSelectEnemy.DefeseCard;
        int Life_Emey_Player = LifePlayer - LifeEnemy;
        int TotalLife = Life_Enemy - Life_Emey_Player;
