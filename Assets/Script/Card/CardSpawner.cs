@@ -131,10 +131,7 @@ public class CardSpawner : MonoBehaviourPun
                     movementCard.SetPositionCard();      // Salva la posizione iniziale
                     movementCard.SetObject(CardManager); // Assegna il CardManager
                     cardisplay.IsEnemy = true;
-                    Debug.Log(cardisplay.IsEnemy);
                 }
             }
     }
-
-
 }

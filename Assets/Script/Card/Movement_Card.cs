@@ -9,7 +9,7 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
     public Vector3 LastPosition; // Ultima posizione valida della carta
     public RectTransform rectTransform;
     public bool CardRelase;
-
+    public Card_Info CardSelection;
 
     [SerializeField] private Card_Display card_Display;
     [SerializeField] private CardManager cardManager;
@@ -19,6 +19,7 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
     {
         photonview = GetComponent<PhotonView>();
     }
+
     public void SetObject(CardManager CardManager)
     {
         card_Display = GetComponent<Card_Display>();
@@ -41,7 +42,14 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        cardManager.cardSelect = card_Display.Card_Info;
+        if (card_Display.IsEnemy)
+        {
+            cardManager.cardSelectEnemy = card_Display.Card_Info;
+        }
+        else
+        {
+            cardManager.cardSelectPlayer = card_Display.Card_Info;
+        }  
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -66,17 +74,36 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
 
         string NameCard = card_Display.Card_Info.name;
 
-        cardManager.cardSelect = card_Display.Card_Info;
+
+        if (card_Display.IsEnemy)
+        {
+            cardManager.cardSelectEnemy = card_Display.Card_Info;
+        }
+        else
+        {
+            cardManager.cardSelectPlayer = card_Display.Card_Info;
+        }
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        if (cardManager.allLightsOff)
+        if(card_Display.IsEnemy)
         {
-            ResetCardPosition();
-            return;
+            if (cardManager.allLightsOffEnemy)
+            {
+                ResetCardPosition();
+                return;
+            }
         }
-
+        else
+        {
+            if (cardManager.allLightsOffPlayer)
+            {
+                ResetCardPosition();
+                return;
+            }
+        }
+  
         Vector2 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse 
         string Target = card_Display.IsEnemy ? "PlaceCardEnemy" : "PlaceCardPlayer";
 
@@ -105,9 +132,25 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
     }
     private void ExecuteCardAction()
     {
-        cardManager.DescreseLight();
-        cardManager.DecreseLife();
-        cardManager.cardSelect.cardAction.Execute(cardManager.cardSelect, cardManager);// Esegui L'effeto della carta
+        if (!card_Display.IsEnemy)
+        {
+            cardManager.DescreseLightPlayer();
+            //cardManager.DecreseLife();
+            if (cardManager.cardSelectPlayer.cardAction != null)
+            {
+                cardManager.cardSelectPlayer.cardAction.Execute(cardManager.cardSelectPlayer, cardManager);// Esegue L'effeto della carta quando e il player
+            }
+        }
+        else
+        {
+            cardManager.DescreseLightEnemy();
+            //cardManager.DecreseLife();
+            if (cardManager.cardSelectEnemy.cardAction != null)
+            {
+                cardManager.cardSelectEnemy.cardAction.Execute(cardManager.cardSelectEnemy, cardManager);// Esegue L'effeto della carta quando e l'avversario
+            }
+        }
+        Debug.Log(card_Display.IsEnemy);
     }
     private void ResetCardPosition()
     {
