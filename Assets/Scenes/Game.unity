@@ -6161,9 +6161,9 @@ MonoBehaviour:
   allLightsOffEnemy: 0
   Text_ValueLifePlayer: {fileID: 1628229854}
   Text_ValueLifeEnemy: {fileID: 1435812049}
-  WinPlayer: {fileID: 933101796}
+  WinPlayer: {fileID: 1556214211}
   WinEnemy: {fileID: 1687234681}
-  Parita: {fileID: 1556214211}
+  Parita: {fileID: 933101796}
   Life_Player: 20
   Life_Enemy: 20
   CardRelese: 0
