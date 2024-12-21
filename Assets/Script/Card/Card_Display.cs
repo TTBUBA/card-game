@@ -13,8 +13,7 @@ public class Card_Display : MonoBehaviour
     {
         LightCard = Card_Info.attack;
         AttackCard = Card_Info.attack;
-        DefeseCard = Card_Info.defense;
-        //IsEnemy = Card_Info.IsEnemy;
+        DefeseCard = Card_Info.defense;     
     }
 
 }

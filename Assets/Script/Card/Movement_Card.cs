@@ -110,6 +110,7 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
         if(tryPositionCard(PosMouse, Target))
         {
             ExecuteCardAction();
+            cardManager.CardRelese++;
         }
         else
         {
@@ -135,22 +136,31 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
         if (!card_Display.IsEnemy)
         {
             cardManager.DescreseLightPlayer();
-            //cardManager.DecreseLife();
             if (cardManager.cardSelectPlayer.cardAction != null)
             {
                 cardManager.cardSelectPlayer.cardAction.Execute(cardManager.cardSelectPlayer, cardManager);// Esegue L'effeto della carta quando e il player
+            }
+
+            if (cardManager.CardRelese >= 1)
+            {
+                Debug.Log("Both cards placed, calling OnbothCardPlace()");
+                cardManager.OnbothCardPlace();
             }
         }
         else
         {
             cardManager.DescreseLightEnemy();
-            //cardManager.DecreseLife();
             if (cardManager.cardSelectEnemy.cardAction != null)
             {
                 cardManager.cardSelectEnemy.cardAction.Execute(cardManager.cardSelectEnemy, cardManager);// Esegue L'effeto della carta quando e l'avversario
             }
+
+            if(cardManager.CardRelese >= 1)
+            {
+                Debug.Log("Both cards placed, calling OnbothCardPlace()");
+                cardManager.OnbothCardPlace();
+            }
         }
-        Debug.Log(card_Display.IsEnemy);
     }
     private void ResetCardPosition()
     {

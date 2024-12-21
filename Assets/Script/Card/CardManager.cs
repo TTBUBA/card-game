@@ -22,9 +22,17 @@ public class CardManager : MonoBehaviour
     public Text Text_ValueLifePlayer;
     public Text Text_ValueLifeEnemy;
 
+    [Header("Animation")]
+    public Animation WinPlayer;
+    public Animation WinEnemy;
+    public Animation Parita;
+
     public int Life_Player = 20;
     public int Life_Enemy = 20;
 
+    public int CardRelese = 0;
+
+    
     public void Update()
     {
         UpdateUi();
@@ -75,29 +83,44 @@ public class CardManager : MonoBehaviour
     }
 
     // Metodo per ridurre la vita di giocatore e nemico
-    public void DecreseLife()
+    public void CompareCardsAndApplyDamage()
     {
-        /*
-        // Esempio di calcolo per ridurre la vita basato su attacco e difesa
-        int LifePlayer = cardSelect.attack + cardSelect.defense;
-        int LifeEnemy = cardSelectEnemy.AttackCard + cardSelectEnemy.DefeseCard;
-        int Life_Emey_Player = LifePlayer - LifeEnemy;
-        int TotalLife = Life_Enemy - Life_Emey_Player;
-        */
 
-        // Aggiornamento della UI con il valore calcolato (attualmente commentato)
-        // Text_ValueLifeEnemy.text = TotalLife.ToString();
+        // Calcola il valore totale di ogni carta
+        int playerCardTotal = cardSelectPlayer.attack + cardSelectPlayer.defense;
+        int enemyCardTotal = cardSelectEnemy.attack + cardSelectEnemy.defense;
+        Debug.Log(playerCardTotal);
+        Debug.Log(enemyCardTotal);
 
-        /*DEBUG
-        // Debug per verificare i valori di attacco, difesa e vita
-        Debug.Log($"AttackPlayer:{cardSelect.Attack} DefesePlayer:{cardSelect.Defese}");
-        Debug.Log($"AttackEnemy:{cardSelectEnemy.AttackCard}DefeseEnemy:{cardSelectEnemy.DefeseCard}");
-        Debug.Log(LifePlayer);
-        Debug.Log(LifeEnemy);
-        Debug.Log(TotalLife);
-        */
+        //determina il vincitore 
+        if (playerCardTotal > enemyCardTotal)
+        {
+            //player vince 
+            int damage = playerCardTotal - enemyCardTotal;
+            Life_Enemy = Mathf.Max(0, Life_Enemy - damage);
+            WinPlayer.Play();
+        }
+        else if(enemyCardTotal > playerCardTotal)
+        {
+            //Nemico Vince vince 
+            int damage = enemyCardTotal - playerCardTotal;
+            Life_Player = Mathf.Max(0, Life_Player - damage);
+            WinEnemy.Play();
+        }
+        else
+        {
+            Parita.Play();
+            Debug.Log("Pari");
+        }
+
+        CardRelese = -1;
+        UpdateUi();
     }
 
+    public void OnbothCardPlace()
+    {
+        CompareCardsAndApplyDamage();
+    }
     // Metodo privato per aggiornare i valori della UI con la vita corrente
     private void UpdateUi()
     {
