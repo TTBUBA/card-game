@@ -121,6 +121,7 @@ public class CardManager : MonoBehaviour
     {
         CompareCardsAndApplyDamage();
     }
+
     // Metodo privato per aggiornare i valori della UI con la vita corrente
     private void UpdateUi()
     {

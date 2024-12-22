@@ -54,7 +54,7 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
 
     public void OnDrag(PointerEventData eventData)
     {
-        /*MULTIPLAYER
+        //MULTIPLAYER
         if (photonview.IsMine)
         {
             Vector3 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse
@@ -63,11 +63,21 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
 
             string NameCard = card_Display.Card_Info.name;
 
-            cardManager.cardSelect = card_Display.Card_Info;    
+            cardManager.cardSelectPlayer = card_Display.Card_Info;    
         }
-        */
+        else if (!photonview.IsMine)
+        {
+            Vector3 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse
+            this.transform.position = PosMouse; // Sposta la carta alla posizione del mouse
+            PosMouse.z = 0;
 
-        //SINGLEPLAYER
+            string NameCard = card_Display.Card_Info.name;
+
+            cardManager.cardSelectEnemy = card_Display.Card_Info;
+        }
+
+
+        /*SINGLEPLAYER
         Vector3 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse
         this.transform.position = PosMouse; // Sposta la carta alla posizione del mouse
         PosMouse.z = 0;
@@ -83,6 +93,8 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
         {
             cardManager.cardSelectPlayer = card_Display.Card_Info;
         }
+        */
+        
     }
 
     public void OnEndDrag(PointerEventData eventData)

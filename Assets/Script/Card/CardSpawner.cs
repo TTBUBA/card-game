@@ -1,3 +1,4 @@
+using NUnit.Framework.Internal;
 using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,33 +23,9 @@ public class CardSpawner : MonoBehaviourPun
 
     void SpawnCards()
     {
-       //SpawnCard();
-        SpawnCardtest();
+       SpawnCard();
+        //SpawnCardSinglePlayer();
     }
-
-    /*
-    public void SpawnCard_Player(string owner)
-    {
-        for(int i = 0; i < 6 ; i++)
-        {
-            GameObject card = PhotonNetwork.Instantiate(PrefabsCard.name, PointSpawnPlayer[i].transform.position, Quaternion.identity);
-            card.transform.SetParent(PointSpawnPlayer[i].transform, false);// Imposta il genitore  a PointSpawnPlayer
-            card.GetComponent<Card_Display>().test = owner;
-        }
-    }
-   
-
-    public void SpawnCard_Enemy(string owner)
-    {
-        for (int i = 0; i < 6; i++)
-        {
-            GameObject card = PhotonNetwork.Instantiate(PrefabsCard.name, PointSpawnEnemy.transform.position, Quaternion.identity);
-            card.transform.SetParent(PointSpawnEnemy.transform, false);// Imposta il genitore  a PointSpawnPlayer
-            card.GetComponent<Card_Display>().test = owner;
-        }
-    }
-    */
-
 
     //TEST MULTIPLAYER
     public void SpawnCard()
@@ -58,20 +35,24 @@ public class CardSpawner : MonoBehaviourPun
 
         if (isLocalPlayer)
         {
-           
+            //spawn carte player
             for (int i = 0; i < 6; i++)
             {
                 // Crea la carta e la sincronizza con tutti i giocatori
-                GameObject card = PhotonNetwork.Instantiate(PrefabsCard.name, PointSpawnPlayer[i].transform.position, Quaternion.identity);
+                GameObject card = Instantiate(PrefabsCard, PointSpawnPlayer[i].transform.position, Quaternion.identity);
                 card.transform.SetParent(PointSpawnPlayer[i].transform, false); // Assegna il punto di spawn
 
                 // Configura la carta
                 Movement_Card movementCard = card.GetComponent<Movement_Card>();
+                Card_Display cardisplay = card.GetComponent<Card_Display>();
+                int randomIndex = Random.Range(0, CardList.Count); // crea un valore random da 0 fino al valore che contiene la lista 
                 if (movementCard != null)
                 {
                     movementCard.SetCamera(MainCamera);   // Assegna la camera
                     movementCard.SetPositionCard();      // Salva la posizione iniziale
                     movementCard.SetObject(CardManager); // Assegna il CardManager
+                    cardisplay.IsEnemy = false;
+                    cardisplay.Card_Info = CardList[randomIndex]; // imposta una cardInfo in base al valore di randomIndex
                 }
             }
 
@@ -79,27 +60,33 @@ public class CardSpawner : MonoBehaviourPun
         }
         else if(!isLocalPlayer)
         {
+            //spawn carte nemiche
             for (int i = 0; i < 6; i++)
             {
                 // Crea la carta e la sincronizza con tutti i giocatori
-                GameObject card = PhotonNetwork.Instantiate(PrefabsCard.name, PointSpawnEnemy[i].transform.position, Quaternion.identity);
+                GameObject card = Instantiate(PrefabsCard, PointSpawnEnemy[i].transform.position, Quaternion.identity);
                 card.transform.SetParent(PointSpawnEnemy[i].transform, false); // Assegna il punto di spawn
 
                 // Configura la carta
                 Movement_Card movementCard = card.GetComponent<Movement_Card>();
+                Card_Display cardisplay = card.GetComponent<Card_Display>();
+                int randomIndex = Random.Range(0, CardList.Count);
                 if (movementCard != null)
                 {
                     movementCard.SetCamera(MainCamera);   // Assegna la camera
                     movementCard.SetPositionCard();      // Salva la posizione iniziale
                     movementCard.SetObject(CardManager); // Assegna il CardManager
+                    cardisplay.IsEnemy = true;
+                    cardisplay.Card_Info = CardList[randomIndex];
                 }
             }
         }
 
     }
 
-    //TEST Singleplayer
-    public void SpawnCardtest()
+    //Test Singleplayer//
+    /*
+    public void SpawnCardSinglePlayer()
     {
             //spawn carte player
             for (int i = 0; i < 6; i++)
@@ -111,15 +98,14 @@ public class CardSpawner : MonoBehaviourPun
                 // Configura la carta
                 Movement_Card movementCard = card.GetComponent<Movement_Card>();
                 Card_Display cardisplay = card.GetComponent<Card_Display>();
-                int randomIndex = Random.Range(0, CardList.Count);
-                Debug.Log(randomIndex);
+                int randomIndex = Random.Range(0, CardList.Count); // crea un valore random da 0 fino al valore che contiene la lista 
                 if (movementCard != null)
                 {
                     movementCard.SetCamera(MainCamera);   // Assegna la camera
                     movementCard.SetPositionCard();      // Salva la posizione iniziale
                     movementCard.SetObject(CardManager); // Assegna il CardManager
                     cardisplay.IsEnemy = false;
-                    cardisplay.Card_Info = CardList[randomIndex];
+                    cardisplay.Card_Info = CardList[randomIndex]; // imposta una cardInfo in base al valore di randomIndex
                 }
             }
 
@@ -133,13 +119,17 @@ public class CardSpawner : MonoBehaviourPun
                 // Configura la carta
                 Movement_Card movementCard = card.GetComponent<Movement_Card>();
                 Card_Display cardisplay = card.GetComponent<Card_Display>();
+                int randomIndex = Random.Range(0, CardList.Count);
                 if (movementCard != null)
                 {
                     movementCard.SetCamera(MainCamera);   // Assegna la camera
                     movementCard.SetPositionCard();      // Salva la posizione iniziale
                     movementCard.SetObject(CardManager); // Assegna il CardManager
                     cardisplay.IsEnemy = true;
+                    cardisplay.Card_Info= CardList[randomIndex];
                 }
             }
     }
+    */
+    //================//
 }
