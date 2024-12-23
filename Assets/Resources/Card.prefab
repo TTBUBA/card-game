@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 1898919678646234317}
   - component: {fileID: 7333640077706832161}
   - component: {fileID: -5554208616192606895}
-  - component: {fileID: -1503418863055675065}
+  - component: {fileID: 6224741957063654331}
   m_Layer: 5
   m_Name: Card
   m_TagString: Untagged
@@ -175,6 +175,7 @@ MonoBehaviour:
   AttackCard: 0
   DefeseCard: 0
   LightCard: 0
+  IsEnemy: 0
 --- !u!114 &7333640077706832161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,6 +192,7 @@ MonoBehaviour:
   LastPosition: {x: 0, y: 0, z: 0}
   rectTransform: {fileID: 0}
   CardRelase: 0
+  CardSelection: {fileID: 0}
   card_Display: {fileID: 0}
   cardManager: {fileID: 0}
   photonview: {fileID: 0}
@@ -213,11 +215,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: -1503418863055675065}
+  - {fileID: 6224741957063654331}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &-1503418863055675065
+--- !u!114 &6224741957063654331
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -226,10 +228,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 8527737741807782784}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Script: {fileID: 11500000, guid: 8efc6b1d64977384eb3405357896c656, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SynchronizePosition: 1
-  m_SynchronizeRotation: 1
-  m_SynchronizeScale: 1
-  m_UseLocal: 1
+  m_PositionModel:
+    SynchronizeEnabled: 1
+    TeleportEnabled: 1
+    TeleportIfDistanceGreaterThan: 3
+    InterpolateOption: 2
+    InterpolateMoveTowardsSpeed: 1
+    InterpolateLerpSpeed: 1
+    ExtrapolateOption: 0
+    ExtrapolateSpeed: 1
+    ExtrapolateIncludingRoundTripTime: 1
+    ExtrapolateNumberOfStoredPositions: 1
+  m_RotationModel:
+    SynchronizeEnabled: 1
+    InterpolateOption: 1
+    InterpolateRotateTowardsSpeed: 180
+    InterpolateLerpSpeed: 5
+  m_ScaleModel:
+    SynchronizeEnabled: 1
+    InterpolateOption: 0
+    InterpolateMoveTowardsSpeed: 1
+    InterpolateLerpSpeed: 0

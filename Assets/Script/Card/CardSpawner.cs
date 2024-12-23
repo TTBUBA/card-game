@@ -1,135 +1,80 @@
-using NUnit.Framework.Internal;
 using Photon.Pun;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class CardSpawner : MonoBehaviourPun 
+public class CardSpawner : MonoBehaviourPunCallbacks
 {
     public GameObject PrefabsCard;
     public GameObject[] PointSpawnPlayer;
     public GameObject[] PointSpawnEnemy;
     public List<Card_Info> CardList;
-
-    public RectTransform Poinspawnplayer;
-    public RectTransform Pointspawnenemy;
-
     public Camera MainCamera;
     public CardManager CardManager;
+
     public void Start()
     {
-        Invoke("SpawnCards", 0.3f);
+        Invoke("SpawnCards", 0.3f); // Delay per assicurarsi che tutti i client siano sincronizzati
     }
 
     void SpawnCards()
     {
-       SpawnCard();
-        //SpawnCardSinglePlayer();
-    }
-
-    //TEST MULTIPLAYER
-    public void SpawnCard()
-    {
-        // Determina se il giocatore è il MasterClient (giocatore principale)
-        bool isLocalPlayer = PhotonNetwork.IsMasterClient;
-
-        if (isLocalPlayer)
+        if (PhotonNetwork.IsMasterClient)
         {
-            //spawn carte player
-            for (int i = 0; i < 6; i++)
-            {
-                // Crea la carta e la sincronizza con tutti i giocatori
-                GameObject card = Instantiate(PrefabsCard, PointSpawnPlayer[i].transform.position, Quaternion.identity);
-                card.transform.SetParent(PointSpawnPlayer[i].transform, false); // Assegna il punto di spawn
-
-                // Configura la carta
-                Movement_Card movementCard = card.GetComponent<Movement_Card>();
-                Card_Display cardisplay = card.GetComponent<Card_Display>();
-                int randomIndex = Random.Range(0, CardList.Count); // crea un valore random da 0 fino al valore che contiene la lista 
-                if (movementCard != null)
-                {
-                    movementCard.SetCamera(MainCamera);   // Assegna la camera
-                    movementCard.SetPositionCard();      // Salva la posizione iniziale
-                    movementCard.SetObject(CardManager); // Assegna il CardManager
-                    cardisplay.IsEnemy = false;
-                    cardisplay.Card_Info = CardList[randomIndex]; // imposta una cardInfo in base al valore di randomIndex
-                }
-            }
-
-            
+            // Il MasterClient spawna entrambi i set di carte
+            SpawnCard(true);  // Carte del master
         }
-        else if(!isLocalPlayer)
+        else
         {
-            //spawn carte nemiche
-            for (int i = 0; i < 6; i++)
-            {
-                // Crea la carta e la sincronizza con tutti i giocatori
-                GameObject card = Instantiate(PrefabsCard, PointSpawnEnemy[i].transform.position, Quaternion.identity);
-                card.transform.SetParent(PointSpawnEnemy[i].transform, false); // Assegna il punto di spawn
+            SpawnCard(false); // Carte dell'altro client
+        }
+    }
 
-                // Configura la carta
-                Movement_Card movementCard = card.GetComponent<Movement_Card>();
-                Card_Display cardisplay = card.GetComponent<Card_Display>();
-                int randomIndex = Random.Range(0, CardList.Count);
-                if (movementCard != null)
-                {
-                    movementCard.SetCamera(MainCamera);   // Assegna la camera
-                    movementCard.SetPositionCard();      // Salva la posizione iniziale
-                    movementCard.SetObject(CardManager); // Assegna il CardManager
-                    cardisplay.IsEnemy = true;
-                    cardisplay.Card_Info = CardList[randomIndex];
-                }
+    public void SpawnCard(bool isPlayer)
+    {
+        for (int i = 0; i < 6; i++)
+        {
+            Vector3 spawnPosition = isPlayer ? PointSpawnPlayer[i].transform.position : PointSpawnEnemy[i].transform.position;
+
+            // Il MasterClient crea la carta
+            GameObject card = PhotonNetwork.Instantiate(PrefabsCard.name, spawnPosition, Quaternion.identity);
+
+            // Calcola il finalIsPlayer per il MasterClient
+            bool finalIsPlayer = PhotonNetwork.IsMasterClient ? isPlayer : !isPlayer;
+
+            // Sincronizza la configurazione tramite RPC
+            photonView.RPC("ConfigureCardRPC", RpcTarget.All, card.GetComponent<PhotonView>().ViewID, finalIsPlayer, i);
+        }
+    }
+
+    [PunRPC]
+    public void ConfigureCardRPC(int viewID, bool isPlayer, int index)
+    {
+        PhotonView cardPhotonView = PhotonView.Find(viewID);
+        if (cardPhotonView != null)
+        {
+            GameObject card = cardPhotonView.gameObject;
+
+            // Imposta il genitore corretto basandosi su isPlayer
+            Transform parent = isPlayer ? PointSpawnPlayer[index].transform : PointSpawnEnemy[index].transform;
+            card.transform.SetParent(parent, false);
+            card.transform.localPosition = Vector3.zero;
+            Debug.Log(parent);
+
+            // Configura i componenti della carta
+            Movement_Card movementCard = card.GetComponent<Movement_Card>();
+            Card_Display cardDisplay = card.GetComponent<Card_Display>();
+     
+            Random.InitState((int)PhotonNetwork.Time + index);
+            int randomIndex = Random.Range(0, CardList.Count);
+            if (movementCard != null && cardDisplay != null)
+            {
+                movementCard.SetCamera(MainCamera);
+                movementCard.SetPositionCard();
+                movementCard.SetObject(CardManager);
+                cardDisplay.IsEnemy = !isPlayer;
+                cardDisplay.Card_Info = CardList[randomIndex];
             }
         }
-
     }
 
-    //Test Singleplayer//
-    /*
-    public void SpawnCardSinglePlayer()
-    {
-            //spawn carte player
-            for (int i = 0; i < 6; i++)
-            {
-                // Crea la carta e la sincronizza con tutti i giocatori
-                GameObject card = Instantiate(PrefabsCard, PointSpawnPlayer[i].transform.position, Quaternion.identity);
-                card.transform.SetParent(PointSpawnPlayer[i].transform, false); // Assegna il punto di spawn
-                
-                // Configura la carta
-                Movement_Card movementCard = card.GetComponent<Movement_Card>();
-                Card_Display cardisplay = card.GetComponent<Card_Display>();
-                int randomIndex = Random.Range(0, CardList.Count); // crea un valore random da 0 fino al valore che contiene la lista 
-                if (movementCard != null)
-                {
-                    movementCard.SetCamera(MainCamera);   // Assegna la camera
-                    movementCard.SetPositionCard();      // Salva la posizione iniziale
-                    movementCard.SetObject(CardManager); // Assegna il CardManager
-                    cardisplay.IsEnemy = false;
-                    cardisplay.Card_Info = CardList[randomIndex]; // imposta una cardInfo in base al valore di randomIndex
-                }
-            }
-
-            //spawn carte nemiche
-            for (int i = 0; i < 6; i++)
-            {
-                // Crea la carta e la sincronizza con tutti i giocatori
-                GameObject card = Instantiate(PrefabsCard, PointSpawnEnemy[i].transform.position, Quaternion.identity);
-                card.transform.SetParent(PointSpawnEnemy[i].transform, false); // Assegna il punto di spawn
-                
-                // Configura la carta
-                Movement_Card movementCard = card.GetComponent<Movement_Card>();
-                Card_Display cardisplay = card.GetComponent<Card_Display>();
-                int randomIndex = Random.Range(0, CardList.Count);
-                if (movementCard != null)
-                {
-                    movementCard.SetCamera(MainCamera);   // Assegna la camera
-                    movementCard.SetPositionCard();      // Salva la posizione iniziale
-                    movementCard.SetObject(CardManager); // Assegna il CardManager
-                    cardisplay.IsEnemy = true;
-                    cardisplay.Card_Info= CardList[randomIndex];
-                }
-            }
-    }
-    */
-    //================//
 }
