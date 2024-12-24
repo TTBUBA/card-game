@@ -45,6 +45,9 @@ MonoBehaviour:
   - InitiateSpawn
   - SyncCardParent
   - ConfigureCardRPC
+  - SetupCardRPC
+  - ConfigureEnemyCardRPC
+  - UpdateCardPositionRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

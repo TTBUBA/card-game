@@ -63,19 +63,10 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
 
             string NameCard = card_Display.Card_Info.name;
 
-            cardManager.cardSelectPlayer = card_Display.Card_Info;    
+            cardManager.cardSelectPlayer = card_Display.Card_Info;
+
+            photonview.RPC("UpdateCardPositionRPC" , RpcTarget.Others , PosMouse);
         }
-        else if (!photonview.IsMine)
-        {
-            Vector3 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse
-            this.transform.position = PosMouse; // Sposta la carta alla posizione del mouse
-            PosMouse.z = 0;
-
-            string NameCard = card_Display.Card_Info.name;
-
-            cardManager.cardSelectEnemy = card_Display.Card_Info;
-        }
-
 
         /*SINGLEPLAYER
         Vector3 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse
@@ -96,7 +87,6 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
         */
         
     }
-
     public void OnEndDrag(PointerEventData eventData)
     {
         if(card_Display.IsEnemy)
@@ -115,21 +105,31 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
                 return;
             }
         }
-  
-        Vector2 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse 
-        string Target = card_Display.IsEnemy ? "PlaceCardEnemy" : "PlaceCardPlayer";
 
-        if(tryPositionCard(PosMouse, Target))
+        if (photonview.IsMine)
         {
-            ExecuteCardAction();
-            cardManager.CardRelese++;
-        }
-        else
-        {
-            ResetCardPosition();
+            Vector2 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition);
+
+            if (tryPositionCard(PosMouse, card_Display.IsEnemy ? "PlaceCardEnemy" : "PlaceCardPlayer"))
+            {
+                ExecuteCardAction();
+                cardManager.CardRelese++;
+
+                // Sincronizza la posizione finale
+                photonview.RPC("UpdateCardPositionRPC", RpcTarget.Others, transform.position);
+            }
+            else
+            {
+                ResetCardPosition();
+            }
         }
     }
 
+    [PunRPC]
+    public void UpdateCardPositionRPC(Vector3 newPosition)
+    {
+        transform.position = newPosition;
+    }
     private bool tryPositionCard(Vector2 position, string TargetType)
     {
         Collider2D hitcollider = Physics2D.OverlapPoint(position); // Controlla se c'è un oggetto sotto il mouse 

@@ -193,9 +193,9 @@ MonoBehaviour:
   rectTransform: {fileID: 0}
   CardRelase: 0
   CardSelection: {fileID: 0}
-  card_Display: {fileID: 0}
+  card_Display: {fileID: 1898919678646234317}
   cardManager: {fileID: 0}
-  photonview: {fileID: 0}
+  photonview: {fileID: -5554208616192606895}
 --- !u!114 &-5554208616192606895
 MonoBehaviour:
   m_ObjectHideFlags: 0

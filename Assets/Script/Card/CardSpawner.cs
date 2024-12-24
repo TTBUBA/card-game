@@ -13,19 +13,36 @@ public class CardSpawner : MonoBehaviourPunCallbacks
 
     public void Start()
     {
-        Invoke("SpawnCards", 0.3f); // Delay per assicurarsi che tutti i client siano sincronizzati
+        // Delay per assicurarsi che tutti i client siano sincronizzati
+        Invoke("SpawnCards", 0.3f);
     }
 
     void SpawnCards()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            // Il MasterClient spawna entrambi i set di carte
-            SpawnCard(true);  // Carte del master
+            SpawnCard(true); // Carte del master client
+            SpawnCard(false);
         }
         else
         {
             SpawnCard(false); // Carte dell'altro client
+            SpawnCard(true);
+        }
+    }
+
+    public override void OnJoinedRoom()
+    {
+        base.OnJoinedRoom();
+        if (PhotonNetwork.IsMasterClient)
+        {
+            SpawnCard(true); // Carte del master client
+            //SpawnCard(false);
+        }
+        else
+        {
+            SpawnCard(false); // Carte dell'altro client
+            //SpawnCard(true);
         }
     }
 
@@ -35,10 +52,10 @@ public class CardSpawner : MonoBehaviourPunCallbacks
         {
             Vector3 spawnPosition = isPlayer ? PointSpawnPlayer[i].transform.position : PointSpawnEnemy[i].transform.position;
 
-            // Il MasterClient crea la carta
+            // Crea la carta in rete
             GameObject card = PhotonNetwork.Instantiate(PrefabsCard.name, spawnPosition, Quaternion.identity);
 
-            // Calcola il finalIsPlayer per il MasterClient
+            // Calcola il valore finale per isPlayer
             bool finalIsPlayer = PhotonNetwork.IsMasterClient ? isPlayer : !isPlayer;
 
             // Sincronizza la configurazione tramite RPC
@@ -54,27 +71,38 @@ public class CardSpawner : MonoBehaviourPunCallbacks
         {
             GameObject card = cardPhotonView.gameObject;
 
-            // Imposta il genitore corretto basandosi su isPlayer
-            Transform parent = isPlayer ? PointSpawnPlayer[index].transform : PointSpawnEnemy[index].transform;
+            // Determina se la carta appartiene al giocatore locale
+            bool isCardForLocalPlayer = (PhotonNetwork.IsMasterClient && isPlayer) || (!PhotonNetwork.IsMasterClient && !isPlayer);
+
+            // Assegna il parent corretto
+            Transform parent = isCardForLocalPlayer ? PointSpawnPlayer[index].transform : PointSpawnEnemy[index].transform;
+
             card.transform.SetParent(parent, false);
             card.transform.localPosition = Vector3.zero;
-            Debug.Log(parent);
+
+            Debug.Log($"Card assigned to parent: {parent.name}, IsPlayer: {isPlayer}, Index: {index}, LocalView: {isCardForLocalPlayer}");
 
             // Configura i componenti della carta
             Movement_Card movementCard = card.GetComponent<Movement_Card>();
             Card_Display cardDisplay = card.GetComponent<Card_Display>();
-     
+
             Random.InitState((int)PhotonNetwork.Time + index);
             int randomIndex = Random.Range(0, CardList.Count);
+
             if (movementCard != null && cardDisplay != null)
             {
                 movementCard.SetCamera(MainCamera);
                 movementCard.SetPositionCard();
                 movementCard.SetObject(CardManager);
-                cardDisplay.IsEnemy = !isPlayer;
+
+                // Configura la visualizzazione della carta
+                cardDisplay.IsEnemy = !isCardForLocalPlayer;
                 cardDisplay.Card_Info = CardList[randomIndex];
             }
         }
     }
 
 }
+
+
+
