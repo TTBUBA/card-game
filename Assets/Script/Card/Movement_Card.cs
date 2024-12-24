@@ -14,7 +14,15 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
     [SerializeField] private Card_Display card_Display;
     [SerializeField] private CardManager cardManager;
     [SerializeField] private PhotonView photonview;
+    [SerializeField] private PhotonTransformView photonTransformView;
 
+    private void Awake()
+    {
+        if(photonTransformView == null)
+        {
+            photonTransformView = GetComponent<PhotonTransformView>();
+        }
+    }
     public void Start()
     {
         photonview = GetComponent<PhotonView>();

@@ -48,6 +48,10 @@ MonoBehaviour:
   - SetupCardRPC
   - ConfigureEnemyCardRPC
   - UpdateCardPositionRPC
+  - RequestCardsSync
+  - InitializeCard
+  - RequestCardSync
+  - NotifyDataSynchronization
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

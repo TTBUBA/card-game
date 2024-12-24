@@ -196,6 +196,7 @@ MonoBehaviour:
   card_Display: {fileID: 1898919678646234317}
   cardManager: {fileID: 0}
   photonview: {fileID: -5554208616192606895}
+  photonTransformView: {fileID: 0}
 --- !u!114 &-5554208616192606895
 MonoBehaviour:
   m_ObjectHideFlags: 0
