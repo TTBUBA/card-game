@@ -16,6 +16,7 @@ MonoBehaviour:
   cardDescription: 
   cardImage: {fileID: 0}
   cardType: 
+  cardId: 5
   attack: 2
   defense: 3
   light: 5

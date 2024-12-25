@@ -16,6 +16,7 @@ MonoBehaviour:
   cardDescription: 
   cardImage: {fileID: 0}
   cardType: iastima
+  cardId: 1
   attack: 5
   defense: 5
   light: 2

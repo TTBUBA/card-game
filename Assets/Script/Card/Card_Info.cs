@@ -10,7 +10,7 @@ public class Card_Info : ScriptableObject
     public string cardDescription;
     public Sprite cardImage;
     public string cardType;
-
+    public int cardId;
     [Header("Card Stats")]
     public int attack;
     public int defense;
@@ -19,6 +19,6 @@ public class Card_Info : ScriptableObject
 
     [Header("Card Ability")]
     public CardAction cardAction;
-
+    
 }
 
