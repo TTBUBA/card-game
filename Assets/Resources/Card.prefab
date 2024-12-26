@@ -92,8 +92,8 @@ GameObject:
   - component: {fileID: 7737498887566856768}
   - component: {fileID: 1898919678646234317}
   - component: {fileID: 7333640077706832161}
-  - component: {fileID: -5554208616192606895}
-  - component: {fileID: 6224741957063654331}
+  - component: {fileID: 3598259629368567829}
+  - component: {fileID: 8067675594122474564}
   m_Layer: 5
   m_Name: Card
   m_TagString: Untagged
@@ -172,6 +172,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Card_Info: {fileID: 11400000, guid: 89b7d6f571464734187e858a69677f4e, type: 2}
+  CardManager: {fileID: 0}
   AttackCard: 0
   DefeseCard: 0
   LightCard: 0
@@ -190,14 +191,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Camera: {fileID: 0}
   LastPosition: {x: 0, y: 0, z: 0}
-  rectTransform: {fileID: 0}
   CardRelase: 0
   CardSelection: {fileID: 0}
   card_Display: {fileID: 1898919678646234317}
   cardManager: {fileID: 0}
-  photonview: {fileID: -5554208616192606895}
-  photonTransformView: {fileID: 0}
---- !u!114 &-5554208616192606895
+--- !u!114 &3598259629368567829
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -216,11 +214,11 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 6224741957063654331}
+  - {fileID: 8067675594122474564}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &6224741957063654331
+--- !u!114 &8067675594122474564
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

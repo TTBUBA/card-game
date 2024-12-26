@@ -53,6 +53,12 @@ MonoBehaviour:
   - RequestCardSync
   - NotifyDataSynchronization
   - SyncCard
+  - SyncEnvironment
+  - SyncCardAction
+  - SyncFinalPosition
+  - SyncPosition
+  - SpawnCardRPC
+  - ExecuteCardActionRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

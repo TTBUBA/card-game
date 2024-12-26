@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class Card_Display : MonoBehaviour
 {
     public Card_Info Card_Info;
+    public CardManager CardManager;
     public int AttackCard;
     public int DefeseCard;
     public int LightCard;

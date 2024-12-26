@@ -2,30 +2,22 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-
-public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, IPointerClickHandler
+public class Movement_Card : MonoBehaviourPunCallbacks, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
     public Camera Camera;
-    public Vector3 LastPosition; // Ultima posizione valida della carta
-    public RectTransform rectTransform;
+    public Vector3 LastPosition;
     public bool CardRelase;
     public Card_Info CardSelection;
-
     [SerializeField] private Card_Display card_Display;
     [SerializeField] private CardManager cardManager;
-    [SerializeField] private PhotonView photonview;
-    [SerializeField] private PhotonTransformView photonTransformView;
+    private PhotonView photonView;
+    private RectTransform rectTransform;
+    private bool isDragging = false;
 
-    private void Awake()
-    {
-        if(photonTransformView == null)
-        {
-            photonTransformView = GetComponent<PhotonTransformView>();
-        }
-    }
     public void Start()
     {
-        photonview = GetComponent<PhotonView>();
+        photonView = GetComponent<PhotonView>();
+        rectTransform = GetComponent<RectTransform>();
     }
 
     public void SetObject(CardManager CardManager)
@@ -34,13 +26,12 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
         cardManager = CardManager;
     }
 
-    // Metodo per impostare la posizione iniziale della carta in termini di coordinate globali
     public void SetPositionCard()
     {
-        rectTransform = GetComponent<RectTransform>(); // Ottieni il RectTransform associato alla carta
-        Vector3 worldPosition = rectTransform.TransformPoint(Vector3.zero); // Converte la posizione locale in posizione globale
-        worldPosition.z = 0; 
-        LastPosition = worldPosition; // Salva la posizione della carta
+        rectTransform = GetComponent<RectTransform>();
+        Vector3 worldPosition = rectTransform.TransformPoint(Vector3.zero);
+        worldPosition.z = 0;
+        LastPosition = worldPosition;
     }
 
     public void SetCamera(Camera camera)
@@ -50,6 +41,8 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (!photonView.IsMine) return;
+
         if (card_Display.IsEnemy)
         {
             cardManager.cardSelectEnemy = card_Display.Card_Info;
@@ -57,133 +50,111 @@ public class Movement_Card : MonoBehaviourPun , IDragHandler, IEndDragHandler, I
         else
         {
             cardManager.cardSelectPlayer = card_Display.Card_Info;
-        }  
+        }
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        //MULTIPLAYER
-        if (photonview.IsMine)
-        {
-            Vector3 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse
-            this.transform.position = PosMouse; // Sposta la carta alla posizione del mouse
-            PosMouse.z = 0;
+        if (!photonView.IsMine) return;
 
-            string NameCard = card_Display.Card_Info.name;
+        isDragging = true;
+        Vector3 posMouse = Camera.ScreenToWorldPoint(Input.mousePosition);
+        posMouse.z = 0;
 
-            cardManager.cardSelectPlayer = card_Display.Card_Info;
+        // Aggiorna la posizione localmente
+        transform.position = posMouse;
 
-            photonview.RPC("UpdateCardPositionRPC" , RpcTarget.Others , PosMouse);
-        }
-
-        /*SINGLEPLAYER
-        Vector3 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition); // Ottiene la posizione del mouse
-        this.transform.position = PosMouse; // Sposta la carta alla posizione del mouse
-        PosMouse.z = 0;
-
-        string NameCard = card_Display.Card_Info.name;
-
-
-        if (card_Display.IsEnemy)
-        {
-            cardManager.cardSelectEnemy = card_Display.Card_Info;
-        }
-        else
-        {
-            cardManager.cardSelectPlayer = card_Display.Card_Info;
-        }
-        */
-        
+        // Sincronizza la posizione con altri client
+        photonView.RPC("SyncPosition", RpcTarget.All, posMouse);
     }
+
     public void OnEndDrag(PointerEventData eventData)
     {
-        if(card_Display.IsEnemy)
+        if (!photonView.IsMine) return;
+
+        isDragging = false;
+
+        if (card_Display.IsEnemy && cardManager.allLightsOffEnemy ||
+            !card_Display.IsEnemy && cardManager.allLightsOffPlayer)
         {
-            if (cardManager.allLightsOffEnemy)
-            {
-                ResetCardPosition();
-                return;
-            }
+            ResetCardPosition();
+            return;
+        }
+
+        Vector2 posMouse = Camera.ScreenToWorldPoint(Input.mousePosition);
+        if (tryPositionCard(posMouse, card_Display.IsEnemy ? "PlaceCardEnemy" : "PlaceCardPlayer"))
+        {
+            // Sincronizza la posizione finale e l'azione della carta
+            photonView.RPC("SyncFinalPosition", RpcTarget.All, transform.position);
+            photonView.RPC("SyncCardAction", RpcTarget.All);
         }
         else
         {
-            if (cardManager.allLightsOffPlayer)
-            {
-                ResetCardPosition();
-                return;
-            }
-        }
-
-        if (photonview.IsMine)
-        {
-            Vector2 PosMouse = Camera.ScreenToWorldPoint(Input.mousePosition);
-
-            if (tryPositionCard(PosMouse, card_Display.IsEnemy ? "PlaceCardEnemy" : "PlaceCardPlayer"))
-            {
-                ExecuteCardAction();
-                cardManager.CardRelese++;
-
-                // Sincronizza la posizione finale
-                photonview.RPC("UpdateCardPositionRPC", RpcTarget.Others, transform.position);
-            }
-            else
-            {
-                ResetCardPosition();
-            }
+            ResetCardPosition();
+            photonView.RPC("SyncPosition", RpcTarget.All, LastPosition);
         }
     }
 
     [PunRPC]
-    public void UpdateCardPositionRPC(Vector3 newPosition)
+    private void SyncPosition(Vector3 newPosition)
     {
-        transform.position = newPosition;
+        if (!photonView.IsMine)
+        {
+            transform.position = newPosition;
+        }
     }
+
+    [PunRPC]
+    private void SyncFinalPosition(Vector3 finalPosition)
+    {
+        transform.position = finalPosition;
+        CardRelase = true;
+    }
+
+    [PunRPC]
+    private void SyncCardAction()
+    {
+        if (!photonView.IsMine)
+        {
+            ExecuteCardAction();
+        }
+    }
+
     private bool tryPositionCard(Vector2 position, string TargetType)
     {
-        Collider2D hitcollider = Physics2D.OverlapPoint(position); // Controlla se c'è un oggetto sotto il mouse 
-
+        Collider2D hitcollider = Physics2D.OverlapPoint(position);
         if (hitcollider != null && hitcollider.CompareTag(TargetType))
         {
             transform.position = hitcollider.transform.position;
             CardRelase = true;
             return true;
         }
-
         return false;
     }
+
     private void ExecuteCardAction()
     {
         if (!card_Display.IsEnemy)
         {
             cardManager.DescreseLightPlayer();
-            if (cardManager.cardSelectPlayer.cardAction != null)
-            {
-                cardManager.cardSelectPlayer.cardAction.Execute(cardManager.cardSelectPlayer, cardManager);// Esegue L'effeto della carta quando e il player
-            }
-
-            if (cardManager.CardRelese >= 1)
-            {
-                Debug.Log("Both cards placed, calling OnbothCardPlace()");
-                cardManager.OnbothCardPlace();
-            }
+            cardManager.cardSelectPlayer.cardAction?.Execute(cardManager.cardSelectPlayer, cardManager);
         }
         else
         {
             cardManager.DescreseLightEnemy();
-            if (cardManager.cardSelectEnemy.cardAction != null)
-            {
-                cardManager.cardSelectEnemy.cardAction.Execute(cardManager.cardSelectEnemy, cardManager);// Esegue L'effeto della carta quando e l'avversario
-            }
-
-            if(cardManager.CardRelese >= 1)
-            {
-                Debug.Log("Both cards placed, calling OnbothCardPlace()");
-                cardManager.OnbothCardPlace();
-            }
+            cardManager.cardSelectEnemy.cardAction?.Execute(cardManager.cardSelectEnemy, cardManager);
         }
+
+        if (cardManager.CardRelese >= 1)
+        {
+            cardManager.OnbothCardPlace();
+        }
+        cardManager.CardRelese++;
     }
+
     private void ResetCardPosition()
     {
         transform.position = LastPosition;
+        photonView.RPC("SyncPosition", RpcTarget.All, LastPosition);
     }
 }
