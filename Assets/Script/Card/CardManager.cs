@@ -1,8 +1,4 @@
-using JetBrains.Annotations;
 using System.Linq;
-using System.Text.RegularExpressions;
-using System.Xml.Schema;
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 

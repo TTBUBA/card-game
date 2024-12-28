@@ -175,6 +175,7 @@ MonoBehaviour:
   CardManager: {fileID: 0}
   AttackCard: 0
   DefeseCard: 0
+  Idcard: 0
   LightCard: 0
   IsEnemy: 0
 --- !u!114 &7333640077706832161

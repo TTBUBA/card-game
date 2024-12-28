@@ -300,11 +300,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 67121456}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8496b43d9efda2144881e1eb0bbb6743, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  LightPlayer: {fileID: 1540945080}
+  LightEnemy: {fileID: 1390819786}
   People_ConnectServer: {fileID: 1715991134}
 --- !u!4 &67121458
 Transform:
@@ -687,6 +689,7 @@ GameObject:
   - component: {fileID: 144399589}
   - component: {fileID: 144399588}
   - component: {fileID: 144399590}
+  - component: {fileID: 144399591}
   m_Layer: 5
   m_Name: Box_positionCard
   m_TagString: PlaceCardPlayer
@@ -797,6 +800,18 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 100, y: 150}
   m_EdgeRadius: 0
+--- !u!114 &144399591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144399586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6a639fa0e48687439298a9595b7e081, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &196654634
 GameObject:
   m_ObjectHideFlags: 0

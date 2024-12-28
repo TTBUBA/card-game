@@ -19,6 +19,6 @@ MonoBehaviour:
   cardId: 4
   attack: 9
   defense: 4
-  light: 1
+  light: 3
   isEnemy: 0
   cardAction: {fileID: 0}
